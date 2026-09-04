@@ -1,0 +1,23 @@
+{
+  "specVersion": "tenki.template.v1",
+  "base": { "image": "sandbox" },
+  "workdir": "/home/tenki/app",
+  "context": {
+    "source": {
+      "git": {
+        "repo": "https://github.com/poktalabs/burning-token-builder-pack.git",
+        "ref": "feat/public-agent-tools-image"
+      }
+    },
+    "checkout": { "dest": "/home/tenki/app", "mode": "contents" }
+  },
+  "steps": [
+    {
+      "run": {
+        "command": "set -eu; sudo apt-get update; sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl git unzip; export HOME=/home/tenki HERMES_HOME=/home/tenki/.hermes PATH=/home/tenki/.local/bin:/usr/local/bin:$PATH; curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash -s -- --skip-setup --skip-browser --skip-computer-use --no-skills; curl -fsSL https://github.com/render-oss/cli/releases/download/v2.22.0/cli_2.22.0_linux_amd64.zip -o /tmp/render.zip; unzip -q /tmp/render.zip -d /tmp; install -m 755 /tmp/cli_v2.22.0 /home/tenki/.local/bin/render; rm -f /tmp/render.zip /tmp/cli_v2.22.0; curl -fsSL https://tenki.cloud/install.sh | bash; npm install -g convex; hermes config set model.provider nebius-token-factory; hermes config set model.default MiniMaxAI/MiniMax-M3; hermes config set model.base_url https://api.tokenfactory.nebius.com/v1/; hermes config set model.aliases.hermes-pro nebius-token-factory/nvidia/Nemotron-3-Ultra-550b-a55b; hermes config set model.aliases.hermes-budget nebius-token-factory/MiniMaxAI/MiniMax-M3; hermes config set model.aliases.developer-pro nebius-token-factory/moonshotai/Kimi-K2.7-Code; hermes config set model.aliases.developer-budget nebius-token-factory/openai/gpt-oss-120b; install -m 700 /home/tenki/app/code/hermes-nebius-tools-sandbox/scripts/hermes-nebius /home/tenki/.local/bin/hermes-nebius; hermes --version; render --version; tenki --version; convex --version; gh --version; hermes config get model.provider | grep -qx nebius-token-factory; hermes config get model.base_url | grep -qx https://api.tokenfactory.nebius.com/v1/; ! grep -qE '^(NEBIUS_API_KEY|RENDER_API_KEY|TENKI_API_KEY|CONVEX_DEPLOY_KEY|GITHUB_TOKEN)=' /home/tenki/.hermes/.env",
+        "timeoutSeconds": 900
+      }
+    }
+  ],
+  "resources": { "cpuCores": 2, "memoryMb": 4096, "diskSizeGb": 20 }
+}

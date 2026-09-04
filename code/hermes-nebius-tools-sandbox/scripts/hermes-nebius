@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Launch Hermes with a Nebius key held only in this process environment.
+set -euo pipefail
+
+[[ -t 0 && -t 1 ]] || {
+  printf 'Run this from an interactive terminal.\n' >&2
+  exit 1
+}
+
+read -rsp 'Nebius Token Factory key: ' NEBIUS_API_KEY
+echo
+
+# Some terminals wrap pasted text in these exact bracketed-paste markers.
+NEBIUS_API_KEY="${NEBIUS_API_KEY//$'\e[200~'/}"
+NEBIUS_API_KEY="${NEBIUS_API_KEY//$'\e[201~'/}"
+
+[[ -n "$NEBIUS_API_KEY" ]] || {
+  printf 'No key entered.\n' >&2
+  exit 1
+}
+
+if [[ "$NEBIUS_API_KEY" =~ [[:cntrl:]] ]]; then
+  printf 'Key contains an unsupported control character. Rerun and paste again.\n' >&2
+  exit 1
+fi
+
+export NEBIUS_API_KEY
+exec hermes "$@"
