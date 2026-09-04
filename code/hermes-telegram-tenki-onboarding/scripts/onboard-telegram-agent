@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Interactive, in-VM Telegram bootstrapper. Credentials never leave this TTY.
+set -euo pipefail
+
+export HOME="${HOME:-/home/tenki}"
+export HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
+export PATH="/home/tenki/.local/bin:/usr/local/bin:$PATH"
+
+usage() {
+  cat <<'EOF'
+Usage: onboard-telegram-agent
+
+Run only inside a Tenki sandbox. Prompts for the Nebius Token Factory key,
+Telegram BotFather token, and numeric Telegram user ID in the active TTY.
+No credential is written to disk, shell history, or Tenki session configuration.
+EOF
+}
+
+[[ "${1:-}" != "--help" && "${1:-}" != "-h" ]] || { usage; exit 0; }
+[[ -t 0 && -t 1 ]] || { printf 'A real interactive TTY is required for private credential entry.\n' >&2; exit 1; }
+
+read -rsp 'Nebius Token Factory key: ' NEBIUS_API_KEY; echo
+[[ -n "$NEBIUS_API_KEY" ]] || { printf 'Nebius key cannot be empty.\n' >&2; exit 2; }
+export NEBIUS_API_KEY
+
+read -rsp 'Telegram BotFather token: ' TELEGRAM_BOT_TOKEN; echo
+[[ -n "$TELEGRAM_BOT_TOKEN" ]] || { printf 'Telegram bot token cannot be empty.\n' >&2; exit 2; }
+export TELEGRAM_BOT_TOKEN
+
+read -rp 'Your numeric Telegram user ID: ' TELEGRAM_ALLOWED_USERS
+if [[ ! "$TELEGRAM_ALLOWED_USERS" =~ ^[0-9]+$ ]]; then
+  printf 'Telegram user ID must be numeric.\n' >&2
+  exit 2
+fi
+export TELEGRAM_ALLOWED_USERS
+
+BOT_USERNAME="$({
+  python3 - <<'PY'
+import json
+import os
+import sys
+import urllib.error
+import urllib.request
+
+url = "https://api.telegram.org/bot" + os.environ["TELEGRAM_BOT_TOKEN"] + "/getMe"
+try:
+    with urllib.request.urlopen(url, timeout=15) as response:
+        payload = json.load(response)
+except (urllib.error.URLError, ValueError, OSError):
+    raise SystemExit("Unable to validate the Telegram bot token. Check the token and outbound network access.")
+if not payload.get("ok") or not payload.get("result", {}).get("username"):
+    raise SystemExit("Telegram rejected the bot token. Regenerate it with BotFather if necessary.")
+print(payload["result"]["username"])
+PY
+} )"
+
+workshop-agent start
+workshop-agent status
+
+cat <<EOF
+
+Hermes is running on the Nebius Budget model and Telegram access is restricted
+to your numeric user ID.
+
+Open Telegram and message @$BOT_USERNAME with:
+  /whoami
+
+Then send a short message such as:
+  Hello — confirm Hermes is responding through Telegram.
+
+For a stronger model in this Telegram session only:
+  /model hermes-pro
+
+When finished, run:
+  workshop-agent stop
+EOF
