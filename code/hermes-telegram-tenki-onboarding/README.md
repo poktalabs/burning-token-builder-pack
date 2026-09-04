@@ -43,7 +43,9 @@ The launcher performs the following steps:
 2. Creates a new sandbox from the immutable registered image.
 3. Uses `--allow-inbound=false` and `--allow-outbound=true`.
 4. Sets a **15-minute idle timeout** and a **2-hour maximum duration** by default.
-5. Opens Tenki managed SSH directly into `onboard-telegram-agent` inside the VM.
+5. Opens a Tenki managed SSH shell with a real TTY, waits for its prompt, and starts `onboard-telegram-agent` automatically through macOS’s built-in `expect` utility.
+
+The script then hands that live TTY to you before any credential prompt. You only type the requested keys and numeric Telegram ID—not another command.
 
 ## What happens inside the VM
 
