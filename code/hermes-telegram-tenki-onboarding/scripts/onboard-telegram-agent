@@ -19,6 +19,13 @@ EOF
 [[ "${1:-}" != "--help" && "${1:-}" != "-h" ]] || { usage; exit 0; }
 [[ -t 0 && -t 1 ]] || { printf 'A real interactive TTY is required for private credential entry.\n' >&2; exit 1; }
 
+strip_bracketed_paste_markers() {
+  local value="$1"
+  value="${value//$'\e[200~'/}"
+  value="${value//$'\e[201~'/}"
+  printf '%s' "$value"
+}
+
 require_safe_secret() {
   local label="$1"
   local value="$2"
@@ -30,10 +37,12 @@ require_safe_secret() {
 }
 
 read -rsp 'Nebius Token Factory key: ' NEBIUS_API_KEY; echo
+NEBIUS_API_KEY="$(strip_bracketed_paste_markers "$NEBIUS_API_KEY")"
 require_safe_secret 'Nebius key' "$NEBIUS_API_KEY"
 export NEBIUS_API_KEY
 
 read -rsp 'Telegram BotFather token: ' TELEGRAM_BOT_TOKEN; echo
+TELEGRAM_BOT_TOKEN="$(strip_bracketed_paste_markers "$TELEGRAM_BOT_TOKEN")"
 require_safe_secret 'Telegram bot token' "$TELEGRAM_BOT_TOKEN"
 export TELEGRAM_BOT_TOKEN
 

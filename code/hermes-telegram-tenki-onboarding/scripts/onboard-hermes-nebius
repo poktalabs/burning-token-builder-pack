@@ -19,7 +19,15 @@ EOF
 [[ "${1:-}" != "--help" && "${1:-}" != "-h" ]] || { usage; exit 0; }
 [[ -t 0 && -t 1 ]] || { printf 'A real interactive TTY is required for private credential entry.\n' >&2; exit 1; }
 
+strip_bracketed_paste_markers() {
+  local value="$1"
+  value="${value//$'\e[200~'/}"
+  value="${value//$'\e[201~'/}"
+  printf '%s' "$value"
+}
+
 read -rsp 'Nebius Token Factory key: ' NEBIUS_API_KEY; echo
+NEBIUS_API_KEY="$(strip_bracketed_paste_markers "$NEBIUS_API_KEY")"
 [[ -n "$NEBIUS_API_KEY" ]] || { printf 'Nebius key cannot be empty.\n' >&2; exit 2; }
 if [[ "$NEBIUS_API_KEY" =~ [[:cntrl:]] ]]; then
   printf 'Nebius key contains a control character. Press Ctrl+C and rerun; paste the value without cursor-key editing.\n' >&2

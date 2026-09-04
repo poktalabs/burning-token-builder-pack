@@ -31,5 +31,6 @@ grep -q 'public and credential-free' "$ROOT/README.md"
 ! rg -n '(NEBIUS_API_KEY=.+[^}]|TELEGRAM_BOT_TOKEN=.+[^}]|GATEWAY_ALLOW_ALL_USERS=true)' "$ROOT/scripts" >/dev/null
 
 python3 "$ROOT/tests/control-character.test.py"
+python3 "$ROOT/tests/bracketed-paste.test.py"
 
 echo 'Hermes Telegram onboarding package checks passed'
