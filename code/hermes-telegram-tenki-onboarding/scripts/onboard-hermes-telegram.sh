@@ -68,7 +68,7 @@ printf '%s\n' "$CREATE_JSON"
 printf '\nSandbox %s is ready. Opening a managed SSH shell and starting its bootstrapper.\n\n' "$NAME"
 EXPECT_BIN="$(command -v expect || true)"
 [[ -n "$EXPECT_BIN" ]] || { printf 'The local expect utility is required for the interactive SSH handoff.\n' >&2; exit 1; }
-"$EXPECT_BIN" "$ROOT/scripts/managed-ssh-bootstrap.exp" "$TENKI_BIN" "$NAME" onboarding-telegram-agent
+"$EXPECT_BIN" "$ROOT/scripts/managed-ssh-bootstrap.exp" "$TENKI_BIN" "$NAME" onboard-telegram-agent
 ssh_exit=$?
 
 cat <<EOF
