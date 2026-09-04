@@ -2,6 +2,7 @@
 # Launch a private Hermes + Pi sandbox and enter its Telegram bootstrapper.
 set -euo pipefail
 
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEFAULT_IMAGE_REF="mlxs8y/hermes-telegram-tenki-onboarding@213bb584-8dc7-4a06-94d7-df4cd6c45584"
 TENKI_BIN="${TENKI_BIN:-${HOME}/.local/bin/tenki}"
 IMAGE_REF="${IMAGE_REF:-$DEFAULT_IMAGE_REF}"

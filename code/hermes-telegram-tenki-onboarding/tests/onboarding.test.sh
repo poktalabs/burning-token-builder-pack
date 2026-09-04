@@ -8,6 +8,7 @@ VM="$ROOT/scripts/onboard-telegram-agent"
 SSH_HELPER="$ROOT/scripts/managed-ssh-bootstrap.exp"
 
 bash -n "$HOST"
+grep -q '^ROOT=' "$HOST"
 EXPECT_PARSE_ONLY=1 SSH_HELPER="$SSH_HELPER" expect -c 'source $env(SSH_HELPER)'
 test -x "$HOST"
 test -x "$VM"
