@@ -25,8 +25,8 @@ grep -q 'contains a control character' "$VM"
 grep -q '\[\[:cntrl:\]\]' "$VM"
 grep -q 'validate the Telegram bot token' "$VM"
 ! grep -q 'sandbox ssh --session "$NAME" -- /home/tenki/.local/bin/onboard-telegram-agent' "$HOST"
-grep -q 'mlxs8y/hermes-telegram-tenki-onboarding@213bb584-8dc7-4a06-94d7-df4cd6c45584' "$HOST"
-grep -q 'mlxs8y/hermes-telegram-tenki-onboarding@213bb584-8dc7-4a06-94d7-df4cd6c45584' "$ROOT/README.md"
+grep -q 'mlxs8y/hermes-telegram-tenki-onboarding@b2e9cbf0-a0b6-49ff-a034-1ab68f97f74f' "$HOST"
+grep -q 'mlxs8y/hermes-telegram-tenki-onboarding@b2e9cbf0-a0b6-49ff-a034-1ab68f97f74f' "$ROOT/README.md"
 grep -q 'public and credential-free' "$ROOT/README.md"
 ! rg -n '(NEBIUS_API_KEY=.+[^}]|TELEGRAM_BOT_TOKEN=.+[^}]|GATEWAY_ALLOW_ALL_USERS=true)' "$ROOT/scripts" >/dev/null
 

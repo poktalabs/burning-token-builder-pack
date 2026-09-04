@@ -1,6 +1,6 @@
 # Hermes + Nebius + Telegram on Tenki
 
-Run a private Hermes Agent in a disposable Tenki Sandbox, using Nebius Token Factory for inference and an allowlisted Telegram bot for chat.
+Run a private Hermes Agent in a disposable Tenki Sandbox, using Nebius Token Factory for inference. The default flow proves the Hermes response over managed SSH first; the allowlisted Telegram bot is a later optional interaction surface.
 
 This directory is the canonical **operator onboarding package** for Burning Token. It includes the script you run locally and the script the image runs inside the VM.
 
@@ -24,11 +24,9 @@ This directory is the canonical **operator onboarding package** for Burning Toke
    tenki status
    ```
 
-2. Create a **dedicated private bot** with [@BotFather](https://t.me/BotFather). Keep the token secret. Do not paste it into GitHub, this README, a chat, or a Tenki command.
+2. Open a local macOS Terminal. You need a real TTY because the VM will request the Nebius key without echoing it.
 
-3. Find your numeric Telegram user ID. It is not your Telegram username. For example, message [@userinfobot](https://t.me/userinfobot).
-
-4. Open a local macOS Terminal. You need a real TTY because the VM will request credentials without echoing them.
+You do **not** need a Telegram bot or Telegram user ID for this first Hermes/Nebius proof.
 
 ## Start the full onboarding flow
 
@@ -49,31 +47,29 @@ The script then hands that live TTY to you before any credential prompt. You onl
 
 ## What happens inside the VM
 
-The in-VM script asks for, in order:
-
-1. **Nebius Token Factory API key** — hidden while you type.
-2. **Telegram BotFather token** — hidden while you type.
-3. **Your numeric Telegram user ID** — validated before startup.
-
-It then validates the BotFather token directly with Telegram, identifies the bot’s `@username`, starts the Hermes Telegram gateway, and tells you to send:
+The in-VM script requests only the **Nebius Token Factory API key**, hidden while you type. It then sends this one Budget-model request:
 
 ```text
-/whoami
+Reply with exactly: Hello from Hermes through Nebius.
 ```
 
-to that bot in Telegram.
-
-Then send a simple chat message:
+A response proves the complete first gate:
 
 ```text
-Hello — confirm Hermes is responding through Telegram.
+managed SSH → Hermes Agent → Nebius Token Factory → MiniMaxAI/MiniMax-M3 → terminal response
 ```
 
-A successful response proves the chain:
+The key exists only in the bootstrap process and is not written to disk, shell history, Tenki metadata, or the image.
 
-```text
-Telegram → Hermes gateway → Nebius Token Factory → Hermes response → Telegram
+## Telegram later
+
+After the core proof succeeds, create a dedicated private bot with [@BotFather](https://t.me/BotFather), find your numeric Telegram user ID (for example via [@userinfobot](https://t.me/userinfobot)), and run this explicit optional command inside the VM:
+
+```bash
+onboard-telegram-agent
 ```
+
+It separately asks for the Telegram token and user ID, validates the bot identity, and starts the allowlisted gateway.
 
 ## Model controls in Telegram
 
@@ -107,7 +103,8 @@ tenki sandbox terminate --session <sandbox-name>
 | Path | Runs where | Purpose |
 |---|---|---|
 | [`scripts/onboard-hermes-telegram.sh`](scripts/onboard-hermes-telegram.sh) | Your Mac | Validates Tenki, creates the sandbox, and opens managed SSH. |
-| [`scripts/onboard-telegram-agent`](scripts/onboard-telegram-agent) | Inside the Tenki VM | Interactively requests credentials, validates the bot identity, starts Hermes, and gives Telegram test instructions. |
+| [`scripts/onboard-hermes-nebius`](scripts/onboard-hermes-nebius) | Inside the Tenki VM | Requests the Nebius key and executes the single Hermes hello-world request. |
+| [`scripts/onboard-telegram-agent`](scripts/onboard-telegram-agent) | Inside the Tenki VM | Optional later Telegram setup: requests Telegram credentials, validates the bot identity, and starts Hermes gateway. |
 | [`tests/onboarding.test.sh`](tests/onboarding.test.sh) | Your Mac / CI | Checks that both scripts are executable, parse correctly, expose help, and contain no credential assignment. |
 
 The VM script is installed from this exact Builder Pack project while the private image is built. The image recipe, model configuration, budget estimator, and no-key image verifier remain in the operator-owned technical repository `fruteroclub/pi-nebius-token-factory`.
@@ -117,7 +114,7 @@ The VM script is installed from this exact Builder Pack project while the privat
 The launcher defaults to this **public and credential-free** immutable Tenki registry image. It contains the reviewed Hermes/Pi tooling and interactive bootstrapper, but no provider key, Telegram token, user allowlist, gateway process, or user workspace state.
 
 ```text
-mlxs8y/hermes-telegram-tenki-onboarding@213bb584-8dc7-4a06-94d7-df4cd6c45584
+mlxs8y/hermes-telegram-tenki-onboarding@b2e9cbf0-a0b6-49ff-a034-1ab68f97f74f
 ```
 
 You may override it only with another public image that you have independently verified:

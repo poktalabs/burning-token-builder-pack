@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DEFAULT_IMAGE_REF="mlxs8y/hermes-telegram-tenki-onboarding@213bb584-8dc7-4a06-94d7-df4cd6c45584"
+DEFAULT_IMAGE_REF="mlxs8y/hermes-telegram-tenki-onboarding@b2e9cbf0-a0b6-49ff-a034-1ab68f97f74f"
 TENKI_BIN="${TENKI_BIN:-${HOME}/.local/bin/tenki}"
 IMAGE_REF="${IMAGE_REF:-$DEFAULT_IMAGE_REF}"
 NAME=""
