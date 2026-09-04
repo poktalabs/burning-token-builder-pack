@@ -67,26 +67,7 @@ printf '%s\n' "$CREATE_JSON"
 printf '\nSandbox %s is ready. Opening a managed SSH shell and starting its bootstrapper.\n\n' "$NAME"
 EXPECT_BIN="$(command -v expect || true)"
 [[ -n "$EXPECT_BIN" ]] || { printf 'The local expect utility is required for the interactive SSH handoff.\n' >&2; exit 1; }
-"$EXPECT_BIN" -f - "$TENKI_BIN" "$NAME" <<'EXPECT'
-set tenki_bin [lindex $argv 0]
-set name [lindex $argv 1]
-set timeout 90
-spawn -noecho $tenki_bin sandbox ssh --session $name
-expect {
-  -re {tenki@[^ \r\n]+:[^ \r\n]+[$] $} {
-    send -- "onboard-telegram-agent\r"
-    interact
-  }
-  timeout {
-    puts stderr "Timed out waiting for the managed SSH shell prompt."
-    exit 1
-  }
-  eof {
-    puts stderr "Managed SSH ended before the onboarding bootstrapper could start."
-    exit 1
-  }
-}
-EXPECT
+"$EXPECT_BIN" "$ROOT/scripts/managed-ssh-bootstrap.exp" "$TENKI_BIN" "$NAME" onboarding-telegram-agent
 ssh_exit=$?
 
 cat <<EOF

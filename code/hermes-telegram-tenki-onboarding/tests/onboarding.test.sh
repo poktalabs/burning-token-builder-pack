@@ -5,16 +5,15 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HOST="$ROOT/scripts/onboard-hermes-telegram.sh"
 VM="$ROOT/scripts/onboard-telegram-agent"
 
+SSH_HELPER="$ROOT/scripts/managed-ssh-bootstrap.exp"
+
 bash -n "$HOST"
-bash -n "$VM"
+EXPECT_PARSE_ONLY=1 SSH_HELPER="$SSH_HELPER" expect -c 'source $env(SSH_HELPER)'
 test -x "$HOST"
 test -x "$VM"
-"$HOST" --help | grep -q 'Usage: onboard-hermes-telegram.sh'
-"$VM" --help | grep -q 'Usage: onboard-telegram-agent'
-grep -q 'spawn -noecho \$tenki_bin sandbox ssh --session \$name' "$HOST"
-! grep -q 'spawn -noecho --' "$HOST"
-grep -q 'command -v expect' "$HOST"
-grep -q 'interact' "$HOST"
+test -f "$SSH_HELPER"
+! grep -q ' -f - ' "$HOST"
+grep -q '"$EXPECT_BIN" "$ROOT/scripts/managed-ssh-bootstrap.exp" "$TENKI_BIN" "$NAME" onboarding-telegram-agent' "$HOST"
 ! grep -q 'sandbox ssh --session "$NAME" -- /home/tenki/.local/bin/onboard-telegram-agent' "$HOST"
 grep -q 'mlxs8y/hermes-nebius-workshop@sha256:c7d262d344d8061d75600a1523827f3044cd6c908a7ba75ebec88ae7ef2c5c22' "$HOST"
 grep -q 'mlxs8y/hermes-nebius-workshop@sha256:c7d262d344d8061d75600a1523827f3044cd6c908a7ba75ebec88ae7ef2c5c22' "$ROOT/README.md"
