@@ -8,6 +8,7 @@ This is a container repository. It brings together reusable builder skills, sess
 
 ## Start here
 
+- Workshop 2 presentation and public agent tools sandbox: [`sessions/create-your-own-ai-dev/`](sessions/create-your-own-ai-dev/)
 - Workshop site and slides: [`web/create-your-own-ai-dev/`](web/create-your-own-ai-dev/)
 - Reusable skills: [`skills/`](skills/)
 - Individual workshops and tutorials: [`sessions/`](sessions/)
@@ -32,7 +33,8 @@ hackathon-builder-pack/
 |---|---|---|
 | `web/` | `create-your-own-ai-dev/` | Workshop 2 landing page and presentation scaffold. |
 | `skills/` | `landing-page-from-five-questions/` | A bounded local Astro landing-page workflow. |
-| `code/` | `hermes-telegram-tenki-onboarding/` | Private operator onboarding contract for the Hermes + Pi Tenki image and Telegram gateway. |
+| `code/` | `hermes-nebius-tools-sandbox/` | Public image recipe and credential-free Nebius launcher for the Workshop 2 tools sandbox. |
+| `code/` | `hermes-telegram-tenki-onboarding/` | Legacy private operator onboarding material. It is not the current participant launch path. |
 | `docs/` | `tenki-managed-ssh-status.md` | Technical readiness boundary for an optional future Tenki format. |
 | `sessions/` | `agentic-code-from-0-to-1/` | Workshop 1 prompt and session material. |
 | `sessions/` | `create-your-own-ai-dev/` | Workshop 2 session material. |
