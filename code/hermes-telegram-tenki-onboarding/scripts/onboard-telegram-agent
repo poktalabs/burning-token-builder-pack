@@ -19,12 +19,22 @@ EOF
 [[ "${1:-}" != "--help" && "${1:-}" != "-h" ]] || { usage; exit 0; }
 [[ -t 0 && -t 1 ]] || { printf 'A real interactive TTY is required for private credential entry.\n' >&2; exit 1; }
 
+require_safe_secret() {
+  local label="$1"
+  local value="$2"
+  [[ -n "$value" ]] || { printf '%s cannot be empty.\n' "$label" >&2; exit 2; }
+  if [[ "$value" =~ [[:cntrl:]] ]]; then
+    printf '%s contains a control character. Press Ctrl+C and rerun; paste the value without cursor-key editing.\n' "$label" >&2
+    exit 2
+  fi
+}
+
 read -rsp 'Nebius Token Factory key: ' NEBIUS_API_KEY; echo
-[[ -n "$NEBIUS_API_KEY" ]] || { printf 'Nebius key cannot be empty.\n' >&2; exit 2; }
+require_safe_secret 'Nebius key' "$NEBIUS_API_KEY"
 export NEBIUS_API_KEY
 
 read -rsp 'Telegram BotFather token: ' TELEGRAM_BOT_TOKEN; echo
-[[ -n "$TELEGRAM_BOT_TOKEN" ]] || { printf 'Telegram bot token cannot be empty.\n' >&2; exit 2; }
+require_safe_secret 'Telegram bot token' "$TELEGRAM_BOT_TOKEN"
 export TELEGRAM_BOT_TOKEN
 
 read -rp 'Your numeric Telegram user ID: ' TELEGRAM_ALLOWED_USERS
