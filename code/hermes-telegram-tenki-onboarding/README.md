@@ -114,14 +114,16 @@ The VM script is installed from this exact Builder Pack project while the privat
 
 ## Registry image reference
 
-The launcher defaults to the immutable image reference below. You may override it only if you have built and verified a newer private image:
+The launcher defaults to this **public and credential-free** immutable Tenki registry image. It contains the reviewed Hermes/Pi tooling and interactive bootstrapper, but no provider key, Telegram token, user allowlist, gateway process, or user workspace state.
 
 ```text
-mlxs8y/hermes-nebius-workshop@sha256:c7d262d344d8061d75600a1523827f3044cd6c908a7ba75ebec88ae7ef2c5c22
+mlxs8y/hermes-telegram-tenki-onboarding@213bb584-8dc7-4a06-94d7-df4cd6c45584
 ```
 
+You may override it only with another public image that you have independently verified:
+
 ```bash
-IMAGE_REF='<your-verified-private-image-reference>' ./scripts/onboard-hermes-telegram.sh
+IMAGE_REF='<your-verified-public-image-reference>' ./scripts/onboard-hermes-telegram.sh
 ```
 
 ## Troubleshooting
