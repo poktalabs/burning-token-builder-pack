@@ -65,10 +65,10 @@ CREATE_JSON="$($TENKI_BIN sandbox create \
   --json)"
 printf '%s\n' "$CREATE_JSON"
 
-printf '\nSandbox %s is ready. Opening a managed SSH shell and starting its bootstrapper.\n\n' "$NAME"
+printf '\nSandbox %s is ready. Opening managed SSH for the Hermes + Nebius hello-world check.\n\n' "$NAME"
 EXPECT_BIN="$(command -v expect || true)"
 [[ -n "$EXPECT_BIN" ]] || { printf 'The local expect utility is required for the interactive SSH handoff.\n' >&2; exit 1; }
-"$EXPECT_BIN" "$ROOT/scripts/managed-ssh-bootstrap.exp" "$TENKI_BIN" "$NAME" onboard-telegram-agent
+"$EXPECT_BIN" "$ROOT/scripts/managed-ssh-bootstrap.exp" "$TENKI_BIN" "$NAME" onboard-hermes-nebius
 ssh_exit=$?
 
 cat <<EOF

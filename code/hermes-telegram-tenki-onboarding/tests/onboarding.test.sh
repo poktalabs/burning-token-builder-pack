@@ -4,17 +4,22 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HOST="$ROOT/scripts/onboard-hermes-telegram.sh"
 VM="$ROOT/scripts/onboard-telegram-agent"
+CORE="$ROOT/scripts/onboard-hermes-nebius"
 
 SSH_HELPER="$ROOT/scripts/managed-ssh-bootstrap.exp"
 
 bash -n "$HOST"
+bash -n "$CORE"
 grep -q '^ROOT=' "$HOST"
 EXPECT_PARSE_ONLY=1 SSH_HELPER="$SSH_HELPER" expect -c 'source $env(SSH_HELPER)'
 test -x "$HOST"
 test -x "$VM"
+test -x "$CORE"
+grep -q 'Nebius Token Factory key' "$CORE"
+grep -q 'hermes-workshop --profile budget -q' "$CORE"
 test -f "$SSH_HELPER"
 ! grep -q ' -f - ' "$HOST"
-grep -q '"$EXPECT_BIN" "$ROOT/scripts/managed-ssh-bootstrap.exp" "$TENKI_BIN" "$NAME" onboard-telegram-agent' "$HOST"
+grep -q '"$EXPECT_BIN" "$ROOT/scripts/managed-ssh-bootstrap.exp" "$TENKI_BIN" "$NAME" onboard-hermes-nebius' "$HOST"
 ! grep -q 'onboarding-telegram-agent' "$HOST"
 grep -q 'contains a control character' "$VM"
 grep -q '\[\[:cntrl:\]\]' "$VM"

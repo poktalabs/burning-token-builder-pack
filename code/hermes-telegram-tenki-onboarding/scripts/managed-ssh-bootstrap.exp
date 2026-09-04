@@ -17,7 +17,7 @@ proc main {argv} {
   expect {
     -re {tenki@[^ \r\n]+:[^ \r\n]+[$] $} {
       send -- "$command\r"
-      if {$command eq "onboard-telegram-agent"} {
+      if {$command eq "onboard-telegram-agent" || $command eq "onboard-hermes-nebius"} {
         # Credentials are read interactively by the VM. No secret crosses this helper.
         interact
       }

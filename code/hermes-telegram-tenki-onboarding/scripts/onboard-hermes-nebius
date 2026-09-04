@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Interactive, in-VM Hermes + Nebius smoke test. The key remains process-local.
+set -euo pipefail
+
+export HOME="${HOME:-/home/tenki}"
+export HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
+export PATH="/home/tenki/.local/bin:/usr/local/bin:$PATH"
+
+usage() {
+  cat <<'EOF'
+Usage: onboard-hermes-nebius
+
+Run only inside a Tenki sandbox. Prompts once for a Nebius Token Factory key,
+then sends a minimal Hermes hello-world request on the Budget model.
+The key is not written to disk, shell history, or Tenki session configuration.
+EOF
+}
+
+[[ "${1:-}" != "--help" && "${1:-}" != "-h" ]] || { usage; exit 0; }
+[[ -t 0 && -t 1 ]] || { printf 'A real interactive TTY is required for private credential entry.\n' >&2; exit 1; }
+
+read -rsp 'Nebius Token Factory key: ' NEBIUS_API_KEY; echo
+[[ -n "$NEBIUS_API_KEY" ]] || { printf 'Nebius key cannot be empty.\n' >&2; exit 2; }
+if [[ "$NEBIUS_API_KEY" =~ [[:cntrl:]] ]]; then
+  printf 'Nebius key contains a control character. Press Ctrl+C and rerun; paste the value without cursor-key editing.\n' >&2
+  exit 2
+fi
+export NEBIUS_API_KEY
+
+printf 'Sending a Hermes hello-world request through Nebius Token Factory...\n\n'
+exec hermes-workshop --profile budget -q 'Reply with exactly: Hello from Hermes through Nebius.'
