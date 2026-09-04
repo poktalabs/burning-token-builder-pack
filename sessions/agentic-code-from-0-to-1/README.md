@@ -9,4 +9,4 @@ Session-specific material for the first pre-hack workshop.
 
 ## Boundaries
 
-This session material is preserved as a reusable reference. Do not treat retired Tenki/SSH/VM experiments as participant infrastructure. Keep builds local unless a later action is explicitly approved and preflighted.
+This session material is preserved as a reusable reference. Tenki managed SSH/TTY is technically certified, but it is not participant infrastructure yet: authenticated model use and the five-question Astro rehearsal remain open gates. Keep builds local unless Mel explicitly approves and preflights a separate Tenki format.

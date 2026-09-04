@@ -11,7 +11,7 @@ Use this skill for the first local build in Burning Token Workshop 1. It turns a
 
 - Work only inside the starter-project directory that Mel names or approves.
 - Keep the deck source at `code/agentic-coding-workshop-deck/` separate.
-- Keep retired Tenki material at `code/tenki-pi-sandbox-launcher/` separate. Do not reuse its files, setup, or assumptions.
+- Keep separate Tenki technical material out of this local skill. Managed SSH/TTY is technically certified, but do not reuse its files, setup, credentials, or attendee-access assumptions unless Mel explicitly approves a separately rehearsed Tenki format.
 - Do not place API keys, deployment credentials, browser sessions, or secrets in source files, screenshots, terminal recordings, or prompts.
 - Do not install Astro globally.
 - Do not use web research, Tavily, Render, Convex, external services, authentication, or deployment unless Mel explicitly asks.

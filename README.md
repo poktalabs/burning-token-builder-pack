@@ -32,6 +32,7 @@ hackathon-builder-pack/
 |---|---|---|
 | `web/` | `create-your-own-ai-dev/` | Workshop 2 landing page and presentation scaffold. |
 | `skills/` | `landing-page-from-five-questions/` | A bounded local Astro landing-page workflow. |
+| `docs/` | `tenki-managed-ssh-status.md` | Technical readiness boundary for an optional future Tenki format. |
 | `sessions/` | `agentic-code-from-0-to-1/` | Workshop 1 prompt and session material. |
 | `sessions/` | `create-your-own-ai-dev/` | Workshop 2 session material. |
 
